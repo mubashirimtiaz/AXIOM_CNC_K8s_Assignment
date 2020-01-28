@@ -3,7 +3,7 @@
 kind: ReplicaSet
 apiVersion: apps/v1
 metadata:
-  name: myrs
+  name: myrstesting
   labels:
     app: rsexample
   namespace: default
@@ -13,13 +13,13 @@ spec:
   replicas: 5
   selector:
     matchLabels:
-      type: frontend
+      type: backend
       env: development
     matchExpressions:
     - key: type
       operator: In
       values:
-      - frontend 
+      - backend 
     - key: env
       operator: In
       values:
@@ -27,15 +27,21 @@ spec:
   template:
     metadata:
       labels:
-        type: frontend
+        type: backend
         env: development
     spec:
+      volumes:
+      - name: shared-dir
+        emptyDir: {}
       containers:
       - name: container1
         image: mubashirimtiaz/wave:v1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
+        volumeMounts:
+        - name: shared-dir
+          mountPath: /tmp/vol-example
         livenessProbe: 
           httpGet: 
             port: 80
@@ -44,3 +50,20 @@ spec:
           httpGet: 
             port: 80
             path: /
+      - name: container2
+        image: aamirpinger/logfile_nodejs
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: shared-dir
+          mountPath: /data
+        livenessProbe:
+          exec: 
+            command:
+            - ls
+        readinessProbe:
+          exec: 
+            command:
+            - ls
+
