@@ -1,0 +1,19 @@
+# Create a Service for your Elements Replica Set
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: myservice
+  labels:
+    app: serviceexample
+  annotations:
+    CREATEDBY: "Mubashir Ali"
+  namespace: default
+spec:
+  type: LoadBalancer
+  selector:
+    type: frontend
+    env: development
+  ports:
+  - port: 5500
+    targetPort: 80 

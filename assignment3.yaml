@@ -1,0 +1,22 @@
+# Create a Liveness Probe to check for your applications health. Use HTTP Get probe
+
+kind: Pod
+apiVersion: v1
+metadata: 
+  name: podwithliveness
+  labels:
+    app: livenessexample
+  namespace: default
+  annotations:
+    CREATEDBY: "Mubashir Ali"
+spec:
+  containers:
+  - name: container2
+    image: aamirpinger/helloworld:latest
+    imagePullPolicy: IfNotPresent
+    ports: 
+    - containerPort: 80
+    livenessProbe: 
+      httpGet: 
+        port: 80
+        path: /

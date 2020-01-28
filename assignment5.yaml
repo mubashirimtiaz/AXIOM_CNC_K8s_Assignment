@@ -1,0 +1,51 @@
+# Create a volume for your pods. Test the volume is working by saving files manually in containers in multiple pods.
+
+kind: Pod
+apiVersion: v1
+metadata: 
+  name: podwithvol
+  labels:
+    app: volumeexample
+  namespace: default
+  annotations:
+    CREATEDBY: "Mubashir Ali"
+spec:
+  volumes:
+  - name: mount-vol
+    emptyDir: {}
+  containers:
+  - name: container3
+    image: aamirpinger/hi:latest
+    imagePullPolicy: IfNotPresent
+    ports: 
+    - containerPort: 80
+    volumeMounts:
+    - name: mount-vol
+      mountPath: /tmp/myvol
+    readinessProbe: 
+      httpGet: 
+        port: 80
+        path: /
+    livenessProbe:
+      httpGet:
+        port: 80
+        path: /
+  - name: container4
+    image: aamirpinger/node-app-image:latest
+    imagePullPolicy: IfNotPresent
+    ports:
+    - containerPort: 8080
+    volumeMounts:
+    - name: mount-vol
+      mountPath: /data/myvol
+    readinessProbe:
+      exec:
+        command:
+        - ls
+    livenessProbe:
+      exec:
+        command: 
+        - ls
+
+
+    

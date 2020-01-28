@@ -1,0 +1,22 @@
+# Create a Readiness Probe to make sure your app is healthy for users. Use HTTP Get probe
+
+kind: Pod
+apiVersion: v1
+metadata: 
+  name: podwithreadiness
+  labels:
+    app: readinessexample
+  namespace: default
+  annotations:
+    CREATEDBY: "Mubashir Ali"
+spec:
+  containers:
+  - name: container3
+    image: aamirpinger/hi:latest
+    imagePullPolicy: IfNotPresent
+    ports: 
+    - containerPort: 80
+    readinessProbe: 
+      httpGet: 
+        port: 80
+        path: /

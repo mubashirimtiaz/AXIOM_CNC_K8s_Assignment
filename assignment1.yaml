@@ -1,0 +1,46 @@
+# Create a Replica Set of 5 Pods with the Elements image
+
+kind: ReplicaSet
+apiVersion: apps/v1
+metadata:
+  name: myrs
+  labels:
+    app: rsexample
+  namespace: default
+  annotations:
+    CREATEDBY: "Mubashir Ali"
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      type: frontend
+      env: development
+    matchExpressions:
+    - key: type
+      operator: In
+      values:
+      - frontend 
+    - key: env
+      operator: In
+      values:
+      - development
+  template:
+    metadata:
+      labels:
+        type: frontend
+        env: development
+    spec:
+      containers:
+      - name: container1
+        image: mubashirimtiaz/wave:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        livenessProbe: 
+          httpGet: 
+            port: 80
+            path: /
+        readinessProbe: 
+          httpGet: 
+            port: 80
+            path: /
